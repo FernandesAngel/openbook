@@ -12,17 +12,18 @@ import { Input } from "../../components/Input";
 const schemaLogin = yup.object({
   email: yup.string().required("Email obrigatória").email("erro email"),
 
-  password: yup.string().required("senha obrigatória"),
+  senha: yup.string().required("senha obrigatória").min(8, "deve ter no mínimo 8 caracteres"),
 });
 
 interface LoginProps {
   email: string;
-  password: string;
+  senha: string;
 }
 
 export function Login() {
   const navigate = useNavigate();
-  const { signIn, loading, authError } = useAuth();
+  const { signIn, authError, loading } = useAuth();
+  //const isLogged = false;
 
   const {
     register,
@@ -38,7 +39,7 @@ export function Login() {
     navigate("/signup");
   }
 
-  async function handleLoginSubmit(data: LoginProps) {
+  async function handleSignIn(data: LoginProps) {
     await signIn(data);
   }
 
@@ -48,20 +49,21 @@ export function Login() {
         <S.TitleContainer>
           <S.Title>Olá,</S.Title>
           <S.Description>
-            Para continuar navegando de forma segura, efetue o login na rede.
+            Faça seu login no openBook.
           </S.Description>
         </S.TitleContainer>
-        <S.Form onSubmit={handleSubmit(handleLoginSubmit)}>
+        <S.Form onSubmit={handleSubmit(handleSignIn)}>
           <h2>Login</h2>
           <Input
             variant="user"
             label="Email"
             type="text"
+
             error={
               (errors.email !== undefined &&
                 errors.email.message !== undefined) ||
-              (errors.password !== undefined &&
-                errors.password.message !== undefined) ||
+              (errors.senha !== undefined &&
+                errors.senha.message !== undefined) ||
               authError
             }
             {...register("email")}
@@ -73,11 +75,11 @@ export function Login() {
             error={
               (errors.email !== undefined &&
                 errors.email.message !== undefined) ||
-              (errors.password !== undefined &&
-                errors.password.message !== undefined) ||
+              (errors.senha !== undefined &&
+                errors.senha.message !== undefined) ||
               authError
             }
-            {...register("password")}
+            {...register("senha")}
           />
           <S.ErrorMessageContainer>
             {authError && (
@@ -89,7 +91,7 @@ export function Login() {
               <S.ErrorMessage error={true}>
                 Ops, usuário ou senha inválidos. <br /> Tente novamente!
               </S.ErrorMessage>
-            ) : errors.password ? (
+            ) : errors.senha ? (
               <S.ErrorMessage error={true}>
                 Ops, usuário ou senha inválidos. <br /> Tente novamente!
               </S.ErrorMessage>

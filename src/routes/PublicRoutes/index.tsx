@@ -7,7 +7,7 @@ interface PrivateRoutesProps {
 
 export function PublicRoutes({
   isLogged,
-  redirectPath = "/home",
+  redirectPath = "/books/home",
 }: PrivateRoutesProps) {
   if (isLogged) {
     return <Navigate to={redirectPath} replace />;

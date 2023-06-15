@@ -8,28 +8,28 @@ import { Button } from "../../components/Button";
 import { SimpleInput } from "../../components/SimpleInput";
 
 const schemaUser = yup.object({
-  name: yup.string().required("Você precisa preencher seu nome completo."),
-  email: yup
+  nome: yup.string().required("Você precisa preencher seu nome completo."),
+  usuario: yup
     .string()
     .required("O campo de email é obrigatório")
     .email("Seu email é inválido"),
 
-  password: yup
+  senha: yup
     .string()
     .required("A senha é obrigatória"),
 
 
-  passwordConfirmation: yup
+    passwordConfirmation: yup
     .string()
-    .oneOf([yup.ref("password")], "As senhas devem ser iguais."),
+    .oneOf([yup.ref('senha'), null], 'A senha e a repetição não conferem'),
 });
 
 const errorsPassword = ["1", "2", "3", "4", "5"];
 
 interface SignUpProps {
-  name: string;
-  email: string;
-  password: string;
+  nome: string;
+  usuario: string;
+  senha: string;
   passwordConfirmation: string;
 }
 
@@ -54,37 +54,38 @@ export function SignUp() {
   }
 
   async function handleSignUpSubmit(data: SignUpProps) {
-    const { name, email, password } = data;
+    const { nome, usuario, senha } = data;
 
     const userData = {
-      email,
-      password,
+      usuario,
+      senha,
+      nome
     };
-    const response = await signUp(userData, { name, email });
+    const response = await signUp(userData);
     if (response) {
       reset();
+      navigate("/");
     }
   }
-
   return (
     <S.Container>
         <S.TitleContainer>
           <S.Title>Olá,</S.Title>
           <S.Description>
-            Faça seu cadastro no OpenBook para blablabla.
+            Faça seu cadastro no OpenBook.
           </S.Description>
         </S.TitleContainer>
         <S.Form onSubmit={handleSubmit(handleSignUpSubmit)}>
           <SimpleInput
             label="Nome Completo"
             type="text"
-            {...register("name")}
+            {...register("nome")}
           />
-          <SimpleInput label="Email" type="email" {...register("email")} />
+          <SimpleInput label="Email" type="email" {...register("usuario")} />
           <SimpleInput
             label="Senha"
             type="password"
-            {...register("password")}
+            {...register("senha")}
           />
 
           <SimpleInput
@@ -93,25 +94,25 @@ export function SignUp() {
             {...register("passwordConfirmation")}
           />
           <S.ErrorMessageContainer>
-            {errors.name ? (
-              <S.ErrorMessage>{errors.name.message}</S.ErrorMessage>
-            ) : errors.email ? (
-              <S.ErrorMessage>{errors.email.message}</S.ErrorMessage>
-            ) : errors.password &&
-              errors.password.message === "A senha é obrigatória" ? (
+            {errors.nome ? (
+              <S.ErrorMessage>{errors.nome.message}</S.ErrorMessage>
+            ) : errors.usuario ? (
+              <S.ErrorMessage>{errors.usuario.message}</S.ErrorMessage>
+            ) : errors.senha &&
+              errors.senha.message === "A senha é obrigatória" ? (
               <S.ErrorMessage>A senha é obrigatória</S.ErrorMessage>
             ) : errors.passwordConfirmation ? (
               <S.ErrorMessage>
                 {errors.passwordConfirmation.message}
               </S.ErrorMessage>
-            ) : errors.password &&
-              errorsPassword.includes(errors.password.message || "") ? (
+            ) : errors.senha &&
+              errorsPassword.includes(errors.senha.message || "") ? (
               <S.ErrorMessage>
                 Verifique se a sua senha atende a todas as especificações.
               </S.ErrorMessage>
             ) : signUpError ? (
               <S.ErrorMessage>{signUpError}</S.ErrorMessage>
-            ) : null}
+            ) : <S.ErrorMessage>vida linda</S.ErrorMessage>}
           </S.ErrorMessageContainer>
           <Button loading={loading} type="submit" title="Cadastrar" />
         </S.Form>

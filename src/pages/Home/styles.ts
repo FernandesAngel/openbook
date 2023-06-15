@@ -19,10 +19,10 @@ export const HeroSection = styled.section`
 export const HeroSectionLeft = styled.div`
   width: 40%;
   h1 {
-    font-size: 60px;
+    font-size: 48px;
   }
   p {
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 export const HeroSectionRight = styled.div`
@@ -45,7 +45,6 @@ export const HeroImage = styled.div`
     gap: 8px;
   }
   img {
-    background: red;
     width: 200px;
     height: 350px;
     object-fit: cover;
@@ -78,16 +77,18 @@ export const SearchContainer = styled.form`
     justify-content: space-between;
     align-items: baseline;
     margin: 20px 0;
-    input{
-      width: 70%;
-      padding: 8px;
-      height: 50px;
-    }
-    div{
-      width: 13%;
-    }
-    button{
-      width: 100%;
+    span {
+      /* width: 10%; */
+    border-radius: 4px;
+    padding: 15px 10px;
+    color: ${(props) => props.theme.colors.white100};
+    background: ${(props) => props.theme.colors.blue};
+    font-weight: 700;
+    font-size: 1.125rem;
+    line-height: 23px;
+    margin-top: 30px;
+    cursor: pointer;
+    border: 0;
     }
 `;
 

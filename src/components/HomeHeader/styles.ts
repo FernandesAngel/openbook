@@ -19,8 +19,5 @@ export const ActionContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  a {
-    background: transparent;
-    border: 0;
-  }
+  width: 60px;
 `;

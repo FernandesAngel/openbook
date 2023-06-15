@@ -4,42 +4,40 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.white200};
+  height: 100vh;
 `;
 export const Content = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  h1{
+    margin: 40px 0 0 0;
+  }
 `;
 
-export const AllBooksContainer = styled.div`
-  width: 100%;
-  padding: 60px 90px;
-  h1{}
+export const AddBookContainer = styled.form`
+  width: 70%;
+  padding: 40px 90px;
+  margin: 0 auto;
 `;
 
-export const BooksContainer = styled.div`
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+export const ErrorMessageContainer = styled.div`
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
-export const SearchContainer = styled.form`
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: space-between;
-    align-items: baseline;
-    margin: 20px 0;
-    input{
-      width: 70%;
-      padding: 8px;
-      height: 50px;
-    }
-    div{
-      width: 13%;
-    }
-    button{
-      width: 100%;
-    }
+
+
+export const ErrorMessage = styled.p`
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 20px;
+  text-align: center;
+  margin-top: 35px;
+  color: ${(props) => props.theme.warnText};
+  max-width: 300px;
 `;
+
 
 

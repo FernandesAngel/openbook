@@ -10,27 +10,28 @@ import { MyLibrary } from "../pages/MyLibrary";
 
 export function Router() {
   const { data } = useAuth();
-  const { isLogged } = data;
+  const { token } = data;
   return (
     <Routes>
       <Route
         path="/"
-        element={<PublicRoutes isLogged={isLogged && isLogged !== undefined} />}
+        element={<PublicRoutes isLogged={!!token} />}
       >
         <Route index element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/minha-biblioteca" element={<MyLibrary />} />
+
       </Route>
       <Route
-        path="/home"
+        path="books"
         element={
-          <PrivateRoutes isLogged={isLogged && isLogged !== undefined} />
+          <PrivateRoutes isLogged={!!token} />
         }
       >
-        {/* <Route index element={<Home />} /> */}
+
+         <Route path="home" element={<Home />} />
+         <Route path="cadastrar-livro" element={<MyLibrary />} />
       </Route>
-      <Route path="*" element={<p>Theres nothing here: 404!</p>} />
+      {/* <Route path="*" element={<Navigate to="/" />} /> */}
     </Routes>
   );
 }

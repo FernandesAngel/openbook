@@ -1,30 +1,8 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
+import { getStorage, settingStorage } from "../../utils/storage";
+import { api } from "../../services/api";
+import { AuthContextData, AuthState, CredentialProps, UserProps } from "./interfaces";
 
-
-interface UserProps {
-  email: string | null | undefined;
-  name: string;
-}
-
-export interface CredentialProps {
-  email: string;
-  password: string;
-}
-
-interface AuthState {
-  user: UserProps;
-  isLogged: boolean;
-}
-
-interface AuthContextData {
-  data: AuthState;
-  authError: boolean;
-  signIn: (credentials: CredentialProps) => Promise<void>;
-  signOut: () => void;
-  signUp: (credentials: CredentialProps, user: UserProps) => Promise<boolean>;
-  signUpError: string;
-  loading: boolean;
-}
 
 interface AuthProps {
   children: ReactNode;
@@ -35,45 +13,58 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 function AuthProvider({ children }: AuthProps) {
   const [data, setData] = useState({} as AuthState);
   const [authError, setAuthError] = useState(false);
-  const [signUpError, setSignUpError] = useState("");
+ const [signUpError, setSignUpError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const settingData = useCallback((dataUser: AuthState): void => {
+    const {token, usuario, id, name} = dataUser;
+    settingStorage({token, usuario, id, name});
+
+    api.defaults.headers.common.Authorization = dataUser.token;
+
+    setData(dataUser);
+  }, []);
 
   useEffect(() => {
     function loadStorageData(): void {
-      const dataStorage = localStorage.getItem(
-        import.meta.env.VITE_LOCAL_STORAGE_KEY
-      );
+      const dataStorage = getStorage();
 
       if (dataStorage) {
         const dataParse = JSON.parse(dataStorage);
-        setData(dataParse);
+
+        api.defaults.headers.common.Authorization = dataParse.token;
+
+        settingData(dataParse);
       }
     }
     loadStorageData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
-  const signIn = useCallback(async (credentials: CredentialProps) => {
-    setLoading(true);
-    try {
+  const signIn = useCallback(
+    async (credentials: CredentialProps): Promise<void> => {
+      try {
+        setLoading(true);
 
+        const response = await api.post('usuarios/logar', credentials);
 
-      // setData("a")
-      localStorage.setItem(
-        import.meta.env.VITE_LOCAL_STORAGE_KEY,
-        JSON.stringify("")
-      );
-      setAuthError(false);
-    } catch (error) {
-      setAuthError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        settingData(response.data);
+      } catch (error) {
+        setAuthError(true);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [ settingData],
+  );
 
   const signUp = useCallback(
-    async (credentials: CredentialProps, user: UserProps) => {
+    async (user: UserProps) => {
       setLoading(true);
       try {
+
+        await api.post('/usuarios/cadastrar', user);
 
         setSignUpError("");
         return true;
@@ -90,7 +81,7 @@ function AuthProvider({ children }: AuthProps) {
   );
 
   const signOut = useCallback(() => {
-    localStorage.removeItem(import.meta.env.VITE_LOCAL_STORAGE_KEY);
+    localStorage.removeItem("user:userToken");
     setData({} as AuthState);
   }, []);
 
@@ -103,6 +94,7 @@ function AuthProvider({ children }: AuthProps) {
         signUp,
         authError,
         loading,
+        settingData,
         signUpError,
       }}
     >

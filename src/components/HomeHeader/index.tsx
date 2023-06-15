@@ -1,17 +1,20 @@
+import { useAuth } from "../../contexts/auth";
+import { Button } from "../Button";
 import * as S from "./styles";
 
 export function HomeHeader() {
+  const {signOut} = useAuth()
   return (
     <S.Container>
       <S.LogoContainer>
         <h1>openbook</h1>
       </S.LogoContainer>
       <S.MenuContainer>
-        <a href="/home">Home</a>
-        <a href="/minha-biblioteca">Minha biblioteca</a>
+        {/* <a href="/home">Home</a> */}
+        {/* <a href="/perfil">Perfil</a> */}
       </S.MenuContainer>
       <S.ActionContainer>
-        <a href="/">Sair</a>
+        <Button title="Sair" loading={false} onClick={() => signOut()}/>
       </S.ActionContainer>
     </S.Container>
   );
